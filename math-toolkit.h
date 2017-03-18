@@ -5,7 +5,11 @@
 #include <stdio.h>
 #include <assert.h>
 
+#ifdef FOURCE_INLINE
+static inline __attribute__((always_inline))
+#else
 static inline
+#endif
 void normalize(double *v)
 {
     double d = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
@@ -16,41 +20,89 @@ void normalize(double *v)
     v[2] /= d;
 }
 
+#ifdef FOURCE_INLINE
+static inline __attribute__((always_inline))
+#else
 static inline
+#endif
 double length(const double *v)
 {
     return sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 }
 
+#ifdef FOURCE_INLINE
+static inline __attribute__((always_inline))
+#else
 static inline
+#endif
 void add_vector(const double *a, const double *b, double *out)
 {
+#ifdef UNROLLING
+    out[0] = a[0] + b[0];
+    out[1] = a[1] + b[1];
+    out[2] = a[2] + b[2];
+#else
     for (int i = 0; i < 3; i++)
         out[i] = a[i] + b[i];
+#endif
 }
 
+#ifdef FOURCE_INLINE
+static inline __attribute__((always_inline))
+#else
 static inline
+#endif
 void subtract_vector(const double *a, const double *b, double *out)
 {
+#ifdef UNROLLING
+    out[0] = a[0] - b[0];
+    out[1] = a[1] - b[1];
+    out[2] = a[2] - b[2];
+#else
     for (int i = 0; i < 3; i++)
         out[i] = a[i] - b[i];
+#endif
 }
 
+#ifdef FOURCE_INLINE
+static inline __attribute__((always_inline))
+#else
 static inline
+#endif
 void multiply_vectors(const double *a, const double *b, double *out)
 {
+#ifdef UNROLLING
+    out[0] = a[0] * b[0];
+    out[1] = a[1] * b[1];
+    out[2] = a[2] * b[2];
+#else
     for (int i = 0; i < 3; i++)
         out[i] = a[i] * b[i];
+#endif
 }
 
+#ifdef FOURCE_INLINE
+static inline __attribute__((always_inline))
+#else
 static inline
+#endif
 void multiply_vector(const double *a, double b, double *out)
 {
+#ifdef UNROLLING
+    out[0] = a[0] * b;
+    out[1] = a[1] * b;
+    out[2] = a[2] * b;
+#else
     for (int i = 0; i < 3; i++)
         out[i] = a[i] * b;
+#endif
 }
 
+#ifdef FOURCE_INLINE
+static inline __attribute__((always_inline))
+#else
 static inline
+#endif
 void cross_product(const double *v1, const double *v2, double *out)
 {
     out[0] = v1[1] * v2[2] - v1[2] * v2[1];
@@ -58,16 +110,30 @@ void cross_product(const double *v1, const double *v2, double *out)
     out[2] = v1[0] * v2[1] - v1[1] * v2[0];
 }
 
+#ifdef FOURCE_INLINE
+static inline __attribute__((always_inline))
+#else
 static inline
+#endif
 double dot_product(const double *v1, const double *v2)
 {
     double dp = 0.0;
+#ifdef UNROLLING
+    dp += v1[0] * v2[0];
+    dp += v1[1] * v2[1];
+    dp += v1[2] * v2[2];
+#else
     for (int i = 0; i < 3; i++)
         dp += v1[i] * v2[i];
+#endif
     return dp;
 }
 
+#ifdef FOURCE_INLINE
+static inline __attribute__((always_inline))
+#else
 static inline
+#endif
 void scalar_triple_product(const double *u, const double *v, const double *w,
                            double *out)
 {
@@ -75,12 +141,15 @@ void scalar_triple_product(const double *u, const double *v, const double *w,
     multiply_vectors(u, out, out);
 }
 
+#ifdef FOURCE_INLINE
+static inline __attribute__((always_inline))
+#else
 static inline
+#endif
 double scalar_triple(const double *u, const double *v, const double *w)
 {
     double tmp[3];
     cross_product(w, u, tmp);
     return dot_product(v, tmp);
 }
-
 #endif
